@@ -108,18 +108,20 @@ window.addEventListener("DOMContentLoaded", (event) => {
   }
 
   function processData(data) {
-    const regexRecaudacion =
-      /Fecha de Recaudación:\s+(\d{4}-\d{2}-\d{2})\s+PESOS\s+(\d+)\s+([\d.,]+)/g;
-    const regexAfectacion = /Fecha de Pago:\s+(\d{4}-\d{2}-\d{2})/g;
-
     data.forEach((text) => {
       let matchRecaudacion;
+      const regexRecaudacion =
+        /Fecha de Recaudación:\s+(\d{4}-\d{2}-\d{2})\s+PESOS\s+(\d+)\s+([\d.,]+)/g;
+      const regexAfectacion = /Fecha de Pago:\s+(\d{4}-\d{2}-\d{2})/g;
+
       while ((matchRecaudacion = regexRecaudacion.exec(text))) {
-        let matchAfectacion; // Cambiado a let
-        while ((matchAfectacion = regexAfectacion.exec(text))) {
-          const fechaRecaudacion = matchRecaudacion[1];
-          const importe = matchRecaudacion[3].replace(".", "");
-          const cupones = matchRecaudacion[2];
+        const fechaRecaudacion = matchRecaudacion[1];
+        const importe = matchRecaudacion[3].replace(".", "");
+        const cupones = matchRecaudacion[2];
+
+        let matchAfectacion;
+        regexAfectacion.lastIndex = regexRecaudacion.lastIndex;
+        if ((matchAfectacion = regexAfectacion.exec(text))) {
           const fechaAfectacion = matchAfectacion[1];
 
           // Agregar los datos a la tabla
